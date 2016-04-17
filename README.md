@@ -16,6 +16,7 @@ definition language.
  - interfaces like `interface Foo { bar: String }`
  - value literals like strings and numbers
  - `Void` type is implemented as alias for `void`.
+ - Support for javascript style comments like `//` and `/**/`
 
 ### Not implemented
 
