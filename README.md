@@ -23,6 +23,9 @@ definition language.
  - default args `(myArray: []) => Any`. Default args are non trivial if we allow non-trivial defaults like objects, it also means we need to do javascript value inference in the type definition language to find the actual type of the signature
  - `Any`. One of the core principles of my type checker is correctness. Any place where `Any` is used we should use `mixed` instead. The type checker implements flow based restrictions and reflection to be able to operate on `mixed`.
  - `Symbol`. The typechecker is currently restricted to ES5 and does not know what a symbole is yet.
+ - `Predicate`. The Predicate type is not implemented for simplicity. It is just a function that returns a boolean. Currently the type checker has no special semantics for predicate style functions with respect to flow typing.
+ - Throwing functions like `(paramName: Type) => Type, throws: TypeError|DOMException`. Currently the type checker does not track throws vs not throws in the system. Punting on adding throwing syntax as part of function until we implement something for it.
+ - Dependencies like `signatureName() => Type, requires: functionA`. Dependencies have no semantics in the type checker. both dependencies and throws could be implemented as function meta data on the function AST.
 
 # progress ( 0.1.0 )
 
