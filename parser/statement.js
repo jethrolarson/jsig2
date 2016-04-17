@@ -1,6 +1,7 @@
 'use strict';
 
 var Parsimmon = require('parsimmon');
+var assert = require('assert');
 
 var lexemes = require('./lexemes.js');
 var AST = require('../ast.js');
@@ -64,11 +65,29 @@ var functionDeclaration = Parsimmon.seq(
     return AST.typeDeclaration(name, type, []);
 });
 
+var constructorDeclaration = Parsimmon.seq(
+    lexemes.newWord,
+    lexemes.identifier,
+    typeFunction
+).map(function createType(list) {
+    var name = list[1];
+    var type = list[2];
+
+    var thisArg = type.result;
+
+    assert(!type.thisArg, 'duplicate this arg');
+    type.result = AST.literal('void');
+    type.thisArg = thisArg;
+
+    return AST.typeDeclaration(name, type, []);
+});
+
 var statement = Parsimmon.alt(
     importStatement,
     assignment,
     typeDeclaration,
     functionDeclaration,
+    constructorDeclaration,
     commentStatement
 );
 

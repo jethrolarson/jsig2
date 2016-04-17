@@ -12,6 +12,7 @@ definition language.
  - `T[]` as an alias for `Array<T>`
  - named signatures like `connect(options: Object) => connection: Object`
  - anonymous optional args `toggle(String, ?: Boolean) => Boolean`
+ - constructor syntax like `new User({ username: String }) => UserInstance`
 
 ### Not implemented
 

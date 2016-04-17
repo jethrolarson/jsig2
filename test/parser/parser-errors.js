@@ -9,7 +9,7 @@ test('bad identifier', function t(assert) {
 
     assert.throws(function throwIt() {
         parse(content);
-    }, /expected one of '\(', ':' at character 7, got '...~bar-boz/);
+    }, /expected one of \'\(', ':' at character 7, got '...~bar-boz/);
 
     assert.end();
 });

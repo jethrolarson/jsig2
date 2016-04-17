@@ -60,14 +60,14 @@ var typeDeclarationWithParen = Parsimmon.alt(
 module.exports = typeDeclarationWithParen;
 
 var typeExpression = require('./type-expression.js');
-var typeFunction = require('./type-function.js');
 var typeObject = require('./type-object.js');
 var typeTuple = require('./type-tuple.js');
+var typeConstr = require('./type-constr.js');
 
 function lazyAlt() {
     var baseExpression = Parsimmon.alt(
+        typeConstr,
         typeExpression,
-        typeFunction,
         typeObject,
         typeTuple
     ).skip(Parsimmon.optWhitespace);

@@ -4,6 +4,7 @@ var Parsimmon = require('parsimmon');
 
 var lexemes = {
     importWord: lexeme(Parsimmon.string('import')),
+    newWord: lexeme(Parsimmon.string('new')),
     rowTypeVariable: lexeme(Parsimmon.string('..R')),
     openCurlyBrace: lexeme(Parsimmon.string('{')),
     closeCurlyBrace: lexeme(Parsimmon.string('}')),
