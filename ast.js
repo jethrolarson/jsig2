@@ -108,6 +108,10 @@ function literal(name, builtin, opts) {
         builtin = undefined;
     }
 
+    if (name === 'Void') {
+        name = 'void';
+    }
+
     return {
         type: 'typeLiteral',
         name: name,

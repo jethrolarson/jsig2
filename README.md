@@ -15,6 +15,7 @@ definition language.
  - constructor syntax like `new User({ username: String }) => UserInstance`
  - interfaces like `interface Foo { bar: String }`
  - value literals like strings and numbers
+ - `Void` type is implemented as alias for `void`.
 
 ### Not implemented
 

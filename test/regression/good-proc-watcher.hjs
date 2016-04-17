@@ -4,7 +4,7 @@ type TFS : {
     readFile: (
         filePath: String,
         encoding: String,
-        cb: (error: Error | null, result: String) => void
+        cb: (error: Error | null, result: String) => Void
     ) => void
 }
 
