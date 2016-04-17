@@ -14,11 +14,14 @@ definition language.
  - anonymous optional args `toggle(String, ?: Boolean) => Boolean`
  - constructor syntax like `new User({ username: String }) => UserInstance`
  - interfaces like `interface Foo { bar: String }`
+ - value literals like strings and numbers
 
 ### Not implemented
 
  - splats `(...args: String[]) => Any`. Type checker doesn't know about splats yet.
  - default args `(myArray: []) => Any`. Default args are non trivial if we allow non-trivial defaults like objects, it also means we need to do javascript value inference in the type definition language to find the actual type of the signature
+ - `Any`. One of the core principles of my type checker is correctness. Any place where `Any` is used we should use `mixed` instead. The type checker implements flow based restrictions and reflection to be able to operate on `mixed`.
+ - `Symbol`. The typechecker is currently restricted to ES5 and does not know what a symbole is yet.
 
 # progress ( 0.1.0 )
 
