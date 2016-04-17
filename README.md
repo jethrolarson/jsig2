@@ -27,6 +27,7 @@ Since there is no good syntax for it yet I'm using the jsig syntax of
  - value literals like strings and numbers
  - `Void` type is implemented as alias for `void`.
  - Support for javascript style comments like `//` and `/**/`
+ - interface with methods. Methods on interfaces are implemented as functions on the object itself. We also infer the this type of the method correctly.
 
 ### Not implemented
 
@@ -38,7 +39,6 @@ Since there is no good syntax for it yet I'm using the jsig syntax of
  - Throwing functions like `(paramName: Type) => Type, throws: TypeError|DOMException`. Currently the type checker does not track throws vs not throws in the system. Punting on adding throwing syntax as part of function until we implement something for it.
  - Dependencies like `signatureName() => Type, requires: functionA`. Dependencies have no semantics in the type checker. both dependencies and throws could be implemented as function meta data on the function AST.
  - Function interface. Currently we do not fully support intersections of functions, aka function overloading. We also do not support function intersections with objects
- - interface with methods. This syntax is ambigious. Is it a constructor and methods or is it a function with properties on it...
  - Limited builtin type support, we do not support arbitrary javascript value expressions, only strings and numbers.
  - Predicate literals like `interface Integer (number) => number === parseInt(number, 10);`. This effectively requires the type system to be dependently typed and even then it wouldn't allow for arbitrary javascript functions.
  - Type composition. There is limited support for `&` in the type system so I've not yet added support for the spread syntax.
