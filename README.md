@@ -32,6 +32,7 @@ definition language.
  - Limited builtin type support, we do not support arbitrary javascript value expressions, only strings and numbers.
  - Predicate literals like `interface Integer (number) => number === parseInt(number, 10);`. This effectively requires the type system to be dependently typed and even then it wouldn't allow for arbitrary javascript functions.
  - Type composition. There is limited support for `&` in the type system so I've not yet added support for the spread syntax.
+ - `interfaces.rtype` is not supported as the type checker is based on header files and has full support for imports from other type files
 
 # progress ( 0.1.0 )
 
