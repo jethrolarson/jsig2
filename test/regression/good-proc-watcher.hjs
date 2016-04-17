@@ -31,7 +31,7 @@ type TProcWatcher : {
     timer: TTimer | null,
     seenFirstRunning: Boolean,
 
-    timeSlices: Array<TProcInfo>,
+    timeSlices: TProcInfo[],
     windowReported: Boolean,
     destroyed: Boolean,
     paused: Boolean,
