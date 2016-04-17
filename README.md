@@ -2,6 +2,20 @@
 
 From scratch type-checker
 
+# rtype compatibility branch
+
+This branch aims to build up compatibility with the rtype type
+definition language.
+
+### Implemented
+
+ - T[] as an alias for Array<T>
+
+### Not implemented
+
+ - splats `(...args: String[]) => Any`. Type checker doesn't know about splats yet.
+ - default args `(myArray: []) => Any`. Default args are non trivial if we allow non-trivial defaults like objects, it also means we need to do javascript value inference in the type definition language to find the actual type of the signature
+
 # progress ( 0.1.0 )
 
 The `v0.1.0` tag was cut. I skipped on a few tests...
