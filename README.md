@@ -7,6 +7,16 @@ From scratch type-checker
 This branch aims to build up compatibility with the rtype type
 definition language.
 
+### Missing from rtype
+
+There is no way to say `variable Foo is of type X`
+
+The closest we have is named function signatures but it seems like they
+are supposed to be type aliases.
+
+Since there is no good syntax for it yet I'm using the jsig syntax of
+`identifier : Type`
+
 ### Implemented
 
  - `T[]` as an alias for `Array<T>`
