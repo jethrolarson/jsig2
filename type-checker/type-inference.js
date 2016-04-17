@@ -156,74 +156,80 @@ function resolveGeneric(funcType, node) {
     assert(node.type === 'CallExpression',
         'can only resolve generic with callee node');
 
-    var genericReplacer = new JsigASTGenericTable(this.meta, funcType, node);
-    var replacer = new JsigASTReplacer(genericReplacer, true);
-
     var copyFunc = JSON.parse(JSON.stringify(funcType));
     copyFunc._raw = null;
-    copyFunc = replacer.inlineReferences(copyFunc, funcType);
+
+    var knownGenericTypes = this._findGenericTypes(copyFunc, node);
+
+    for (var i = 0; i < copyFunc.generics.length; i++) {
+        var g = copyFunc.generics[i];
+        var newType = knownGenericTypes[g.name];
+        assert(newType, 'newType must exist');
+
+        var stack = g.location.slice();
+        var lastProp = stack.pop();
+        var parentType = walkProps(copyFunc, stack, 0);
+
+        parentType[lastProp] = newType;
+    }
 
     return copyFunc;
 };
 
-function JsigASTGenericTable(meta, funcType, node) {
-    this.meta = meta;
-    this.funcType = funcType;
-    this.node = node;
-    this.knownGenerics = {};
-    this.knownGenericTypes = {};
+TypeInference.prototype._findGenericTypes =
+function _findGenericTypes(copyFunc, node) {
+    var knownGenericTypes = Object.create(null);
 
-    for (var i = 0; i < funcType.generics.length; i++) {
-        this.knownGenerics[funcType.generics[i].name] = true;
-    }
-}
+    for (var i = 0; i < copyFunc.generics.length; i++) {
+        var g = copyFunc.generics[i];
 
-JsigASTGenericTable.prototype.replace = function replace(ast, rawAst, stack) {
-    assert(this.knownGenerics[ast.name], 'literal must be a known generic');
+        var newType;
+        var referenceNode;
+        var stack = g.location;
+        var ast = walkProps(copyFunc, stack, 0);
 
-    var newType;
-    var referenceNode;
-    if (stack[0] === 'args') {
-        referenceNode = this.node.arguments[stack[1]];
-        newType = this.meta.verifyNode(referenceNode);
-        newType = walkProps(newType, stack, 2);
-    } else if (stack[0] === 'thisArg') {
-        referenceNode = this.node.callee.object;
-        // TODO: this might be wrong
-        newType = this.meta.verifyNode(referenceNode);
-        newType = walkProps(newType, stack, 1);
-    } else {
-        referenceNode = this.node;
-        newType = this.knownGenericTypes[ast.name];
-        assert(newType, 'newType must exist in fallback');
-    }
+        if (stack[0] === 'args') {
+            referenceNode = node.arguments[stack[1]];
+            newType = this.meta.verifyNode(referenceNode);
+            newType = walkProps(newType, stack, 2);
+        } else if (stack[0] === 'thisArg') {
+            referenceNode = node.callee.object;
+            // TODO: this might be wrong
+            newType = this.meta.verifyNode(referenceNode);
+            newType = walkProps(newType, stack, 1);
+        } else {
+            referenceNode = node;
+            newType = knownGenericTypes[ast.name];
+            assert(newType, 'newType must exist in fallback');
+        }
 
-    if (this.knownGenericTypes[ast.name]) {
-        var oldType = this.knownGenericTypes[ast.name];
-        var subTypeError = this.meta.checkSubTypeRaw(
-            referenceNode, oldType, newType
-        );
-
-        if (subTypeError) {
-            var isSub = this.meta.isSubType(
-                referenceNode, newType, oldType
+        if (knownGenericTypes[ast.name]) {
+            var oldType = knownGenericTypes[ast.name];
+            var subTypeError = this.meta.checkSubTypeRaw(
+                referenceNode, oldType, newType
             );
-            if (isSub) {
-                this.knownGenericTypes[ast.name] = newType;
-                subTypeError = null;
+
+            if (subTypeError) {
+                var isSub = this.meta.isSubType(
+                    referenceNode, newType, oldType
+                );
+                if (isSub) {
+                    knownGenericTypes[ast.name] = newType;
+                    subTypeError = null;
+                }
             }
+            if (subTypeError) {
+                this.meta.addError(subTypeError);
+                // return null;
+                // TODO: bug and shit
+                // assert(false, 'could not resolve generics');
+            }
+        } else {
+            knownGenericTypes[ast.name] = newType;
         }
-        if (subTypeError) {
-            this.meta.addError(subTypeError);
-            // return null;
-            // TODO: bug and shit
-            // assert(false, 'could not resolve generics');
-        }
-    } else {
-        this.knownGenericTypes[ast.name] = newType;
     }
 
-    return newType;
+    return knownGenericTypes;
 };
 
 function walkProps(object, stack, start) {
