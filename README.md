@@ -13,6 +13,7 @@ definition language.
  - named signatures like `connect(options: Object) => connection: Object`
  - anonymous optional args `toggle(String, ?: Boolean) => Boolean`
  - constructor syntax like `new User({ username: String }) => UserInstance`
+ - interfaces like `interface Foo { bar: String }`
 
 ### Not implemented
 

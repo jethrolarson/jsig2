@@ -1,4 +1,4 @@
-type TRouteResult : {
+interface TRouteResult {
     handler: null,
     splat: null,
     params: Object,

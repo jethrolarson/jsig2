@@ -32,4 +32,23 @@ var typeDeclaration = lexemes.typeWord
             });
     });
 
-module.exports = typeDeclaration;
+var interfaceDeclaration = lexemes.interfaceWord
+    .then(Parsimmon.seq(
+        lexemes.identifier,
+        genericExpression.times(0, 1)
+    ))
+    .chain(function captureIdentifiers(list) {
+        var identifier = list[0];
+        var generics = list[1][0] || [];
+
+        return typeDefinition
+            .map(function toTypeDeclaration(type) {
+                return AST.typeDeclaration(identifier, type,
+                    generics);
+            });
+    });
+
+module.exports = Parsimmon.alt(
+    typeDeclaration,
+    interfaceDeclaration
+);
