@@ -8,6 +8,7 @@ var typeDefinition = require('./type-definition.js');
 var typeLiteral = require('./type-literal.js');
 var typeDeclaration = require('./type-declaration.js');
 var join = require('./lib/join.js');
+var typeFunction = require('./type-function.js');
 
 var renamedLiteral = typeLiteral
     .chain(function captureOriginal(original) {
@@ -53,10 +54,21 @@ var commentStatement = lexemes.commentStart
         return AST.comment('--' + text.join(''));
     });
 
+var functionDeclaration = Parsimmon.seq(
+    lexemes.identifier,
+    typeFunction
+).map(function createType(list) {
+    var name = list[0];
+    var type = list[1];
+
+    return AST.typeDeclaration(name, type, []);
+});
+
 var statement = Parsimmon.alt(
     importStatement,
     assignment,
     typeDeclaration,
+    functionDeclaration,
     commentStatement
 );
 
