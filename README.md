@@ -9,8 +9,9 @@ definition language.
 
 ### Implemented
 
- - T[] as an alias for Array<T>
+ - `T[]` as an alias for `Array<T>`
  - named signatures like `connect(options: Object) => connection: Object`
+ - anonymous optional args `toggle(String, ?: Boolean) => Boolean`
 
 ### Not implemented
 

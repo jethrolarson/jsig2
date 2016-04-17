@@ -28,7 +28,7 @@ RouteNode : (
     this: TRouteNode,
     parent: TRouteNode | null,
     segment: String,
-    isSplat?: Boolean
+    ?: Boolean
 ) => void
 
 RouteResult : (
