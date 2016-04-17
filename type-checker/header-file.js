@@ -4,6 +4,7 @@ var assert = require('assert');
 var path = require('path');
 var TypedError = require('error/typed');
 
+var AST = require('../ast.js');
 var JsigASTReplacer = require('./lib/jsig-ast-replacer.js');
 var cloneJSIG = require('./lib/clone-ast.js');
 
@@ -125,6 +126,8 @@ function resolveReferences() {
         var line = copyAst.statements[i];
 
         if (line.type === 'typeDeclaration') {
+            this._fixupMethodAlias(line);
+
             this.addToken(line.identifier, line.typeExpression);
         }
     }
@@ -132,6 +135,28 @@ function resolveReferences() {
     copyAst = this.astReplacer.inlineReferences(copyAst, ast);
 
     this.resolvedJsigAst = copyAst;
+};
+
+HeaderFile.prototype._fixupMethodAlias =
+function _fixupMethodAlias(line) {
+    if (line.typeExpression.type !== 'object') {
+        return;
+    }
+
+    for (var i = 0; i < line.typeExpression.keyValues.length; i++) {
+        var pair = line.typeExpression.keyValues[i];
+
+        if (!pair.isMethod) {
+            continue;
+        }
+
+        var value = pair.value;
+        assert(value.type === 'function', 'method must be function');
+        assert(!value.thisArg, 'cannot have thisArg');
+
+        value.thisArg = AST.literal(line.identifier);
+    }
+    // console.log('type', line.typeExpression.type);
 };
 
 HeaderFile.prototype.getResolvedAssignments =

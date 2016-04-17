@@ -24,8 +24,8 @@ type TRouteNode : {
 type THttpHash : {
     _hash: TRouteNode,
 
-    get : (this: THttpHash, pathname: String) => TRouteResult,
-    set : (this: THttpHash, pathname: String, handler: null) => void
+    get(pathname: String) => TRouteResult,
+    set(pathname: String, handler: null) => void
 }
 
 new CHttpHash() => THttpHash

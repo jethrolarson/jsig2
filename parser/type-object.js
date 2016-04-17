@@ -1,6 +1,10 @@
 'use strict';
 
+var Parsimmon = require('parsimmon');
+var assert = require('assert');
+
 var typeDefinition = require('./type-definition.js');
+var typeFunction = require('./type-function.js');
 var lexemes = require('./lexemes.js');
 var AST = require('../ast.js');
 var join = require('./lib/join.js');
@@ -24,7 +28,23 @@ var typeKeyValue = objectKey
             });
     });
 
-var typeKeyValues = join(typeKeyValue, lexemes.comma);
+var methodKeyValue = Parsimmon.seq(
+    lexemes.identifier,
+    typeFunction
+).map(function createType(list) {
+    var name = list[0];
+    var type = list[1];
+
+    assert(!type.thisArg, 'cannot have thisArg');
+
+    var pair = AST.keyValue(name, type);
+    pair.isMethod = true;
+    return pair;
+});
+
+var typeKeyValues = join(Parsimmon.alt(
+    typeKeyValue, methodKeyValue
+), lexemes.comma);
 
 var rowType = lexemes.comma
     .then(lexemes.rowTypeVariable)
