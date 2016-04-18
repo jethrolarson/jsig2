@@ -221,6 +221,11 @@ function addPrototypeField(id, fieldName, typeDefn) {
     this.prototypes[id].fields[fieldName] = typeDefn;
 };
 
+FileScope.prototype.getReturnExpressionType =
+function getReturnExpressionType() {
+    return null;
+};
+
 FileScope.prototype.addFunctionScope =
 function addFunctionScope(funcScope) {
     assert(!this.functionScopes[funcScope.funcName],
