@@ -180,10 +180,15 @@ function resolveGeneric(funcType, node) {
         assert(newType, 'newType must exist');
 
         var stack = g.location.slice();
-        var lastProp = stack.pop();
-        var parentType = walkProps(copyFunc, stack, 0);
 
-        parentType[lastProp] = newType;
+        var obj = copyFunc;
+        for (var j = 0; j < stack.length - 1; j++) {
+            obj = obj[stack[j]];
+            obj._raw = null;
+        }
+
+        var lastProp = stack[stack.length - 1];
+        obj[lastProp] = newType;
     }
 
     return copyFunc;
@@ -219,9 +224,14 @@ function _findGenericTypes(copyFunc, node) {
         if (knownGenericTypes[ast.name]) {
             var oldType = knownGenericTypes[ast.name];
 
-            var subTypeError = this.meta.checkSubTypeRaw(
-                referenceNode, oldType, newType
-            );
+            var subTypeError;
+            if (newType.type === 'freeLiteral') {
+                subTypeError = null;
+            } else {
+                subTypeError = this.meta.checkSubTypeRaw(
+                    referenceNode, oldType, newType
+                );
+            }
 
             if (subTypeError) {
                 // A free variable fits in any type.

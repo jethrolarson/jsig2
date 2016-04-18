@@ -43,6 +43,7 @@ function TypeChecker(entryFile, options) {
 }
 
 TypeChecker.prototype.addError = function addError(err) {
+    // console.trace('addError(' + err.type + ')');
     this.errors.push(err);
 };
 
@@ -98,8 +99,9 @@ function loadLanguageIdentifiers() {
     this.globalScope._addVirtualType(
         'TString', es5HeaderFile.getToken('TString')
     );
-
-    this.globalScope.loadLanguageIdentifiers();
+    this.globalScope._addVirtualType(
+        'TArray', es5HeaderFile.getToken('TArray')
+    );
 };
 
 TypeChecker.prototype.loadJavaScriptIntoIndexTable =
